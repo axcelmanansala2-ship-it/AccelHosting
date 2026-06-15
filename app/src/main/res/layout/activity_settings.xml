@@ -19,68 +19,59 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
-        android:paddingTop="24dp">
+        android:paddingTop="28dp"
+        android:paddingBottom="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Server URL"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp"
+            android:text="AccelHosting"
+            android:textColor="@color/text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold"
             android:layout_marginBottom="4dp"/>
 
         <TextView
+            android:id="@+id/tvAppVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enter the URL of your AccelHosting Replit server"
+            android:text="v1.0"
             android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            android:layout_marginBottom="12dp"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="https://your-server.replit.app"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_marginBottom="16dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etServerUrl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textUri"
-                android:textColor="@color/text_primary"
-                android:singleLine="true"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
-
-            <Button
-                android:id="@+id/btnTest"
-                android:layout_width="0dp"
-                android:layout_height="44dp"
-                android:layout_weight="1"
-                android:text="Test Connection"
-                android:backgroundTint="@color/bg_surface"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_marginEnd="8dp"/>
-
-            <Button
-                android:id="@+id/btnSave"
-                android:layout_width="0dp"
-                android:layout_height="44dp"
-                android:layout_weight="1"
-                android:text="Save"
-                android:backgroundTint="@color/accent_blue"
-                style="@style/Widget.MaterialComponents.Button"/>
-
-        </LinearLayout>
+            android:textSize="13sp"
+            android:layout_marginBottom="28dp"/>
 
         <TextView
-            android:id="@+id/tvTestResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SERVER"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="6dp"/>
+
+        <TextView
+            android:id="@+id/tvServerUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_surface"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="12dp"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp"
+            android:fontFamily="monospace"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btnTestConnection"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="Test Connection"
+            android:backgroundTint="@color/bg_surface"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/tvConnectionStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="13sp"
