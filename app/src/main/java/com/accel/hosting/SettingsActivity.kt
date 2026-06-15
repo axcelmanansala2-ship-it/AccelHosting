@@ -21,7 +21,7 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.title = "About"
 
         binding.tvServerUrl.text = TokenManager.SERVER_URL
-        binding.tvAppVersion.text = "v${BuildConfig.VERSION_NAME}"
+        binding.tvAppVersion.text = "v1.0"
 
         ApiClient.init(this)
 
