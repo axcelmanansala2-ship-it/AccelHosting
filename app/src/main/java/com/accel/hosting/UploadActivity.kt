@@ -72,7 +72,7 @@ class UploadActivity : AppCompatActivity() {
             }
             binding.tvSelectedFile.text = selectedFileName
 
-            if (binding.etBotName.text.isBlank()) {
+            if (binding.etBotName.text.isNullOrBlank()) {
                 binding.etBotName.setText(selectedFileName.substringBeforeLast('.'))
             }
         }
