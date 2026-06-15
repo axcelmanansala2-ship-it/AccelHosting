@@ -2,7 +2,6 @@ package com.accel.hosting
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.accel.hosting.api.ApiClient
@@ -19,40 +18,27 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Server Settings"
+        supportActionBar?.title = "About"
 
-        binding.etServerUrl.setText(TokenManager.getServerUrl(this))
+        binding.tvServerUrl.text = TokenManager.SERVER_URL
+        binding.tvAppVersion.text = "v${BuildConfig.VERSION_NAME}"
 
-        binding.btnSave.setOnClickListener {
-            val url = binding.etServerUrl.text.toString().trim()
-            if (url.isBlank() || (!url.startsWith("http://") && !url.startsWith("https://"))) {
-                Toast.makeText(this, "Enter a valid URL (http:// or https://)", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            TokenManager.saveServerUrl(this, url)
-            ApiClient.reset()
-            Toast.makeText(this, "Server URL saved", Toast.LENGTH_SHORT).show()
-        }
+        ApiClient.init(this)
 
-        binding.btnTest.setOnClickListener {
-            val url = binding.etServerUrl.text.toString().trim()
-            if (url.isBlank()) { Toast.makeText(this, "Enter a URL first", Toast.LENGTH_SHORT).show(); return@setOnClickListener }
-            TokenManager.saveServerUrl(this, url)
-            ApiClient.reset()
-            ApiClient.init(this)
-            binding.btnTest.isEnabled = false
-            binding.tvTestResult.visibility = View.VISIBLE
-            binding.tvTestResult.text = "Testing…"
+        binding.btnTestConnection.setOnClickListener {
+            binding.btnTestConnection.isEnabled = false
+            binding.tvConnectionStatus.visibility = View.VISIBLE
+            binding.tvConnectionStatus.text = "Testing…"
             lifecycleScope.launch {
                 try {
                     val result = ApiClient.service.healthz()
-                    binding.tvTestResult.text = "✓ Connected — ${result["status"]}"
-                    binding.tvTestResult.setTextColor(getColor(R.color.status_running))
+                    binding.tvConnectionStatus.text = "✓ Connected — ${result["status"]}"
+                    binding.tvConnectionStatus.setTextColor(getColor(R.color.status_running))
                 } catch (e: Exception) {
-                    binding.tvTestResult.text = "✕ Failed: ${e.message}"
-                    binding.tvTestResult.setTextColor(getColor(R.color.status_crashed))
+                    binding.tvConnectionStatus.text = "✕ Unreachable: ${e.message}"
+                    binding.tvConnectionStatus.setTextColor(getColor(R.color.status_crashed))
                 } finally {
-                    binding.btnTest.isEnabled = true
+                    binding.btnTestConnection.isEnabled = true
                 }
             }
         }
