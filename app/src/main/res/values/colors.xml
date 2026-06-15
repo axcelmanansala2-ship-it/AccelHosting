@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dark">#0F1117</color>
+    <color name="bg_surface">#1C1F2E</color>
+    <color name="bg_card">#1E2235</color>
+    <color name="accent_blue">#2AABEE</color>
+    <color name="accent_blue_dark">#1A88D4</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#8E99A4</color>
+    <color name="status_running">#4CAF50</color>
+    <color name="status_stopped">#607D8B</color>
+    <color name="status_crashed">#F44336</color>
+    <color name="status_installing">#FF9800</color>
+    <color name="log_text">#B0BEC5</color>
+    <color name="white">#FFFFFF</color>
+    <color name="card_border">#2A2F45</color>
+</resources>

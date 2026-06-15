@@ -1,0 +1,6 @@
+-keep class com.accel.hosting.models.** { *; }
+-keep class com.accel.hosting.api.ApiService { *; }
+-keepattributes Signature
+-keepattributes *Annotation*
+-dontwarn okhttp3.**
+-dontwarn retrofit2.**
