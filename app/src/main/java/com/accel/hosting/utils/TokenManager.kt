@@ -5,7 +5,7 @@ import android.content.Context
 object TokenManager {
     private const val PREFS = "accel_prefs"
     private const val KEY_TOKEN = "token"
-    const val SERVER_URL = "https://workspacerobiemultidc--robiemultidc.replit.app"
+    const val SERVER_URL = "https://secret-vault--notjack200.replit.app"
 
     fun saveToken(context: Context, token: String) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
