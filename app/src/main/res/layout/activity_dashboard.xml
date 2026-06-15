@@ -39,11 +39,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Overview"
+                    android:text="OVERVIEW"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.1"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.15"
                     android:layout_marginBottom="10dp"/>
 
                 <GridLayout
@@ -54,21 +54,25 @@
                     android:layout_marginBottom="20dp">
 
                     <LinearLayout style="@style/StatCard" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="4dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⚡" android:textSize="22sp" android:layout_marginBottom="2dp"/>
                         <TextView android:id="@+id/tvTotalBots" style="@style/StatNumber" android:text="—"/>
-                        <TextView android:text="Total Bots" style="@style/StatLabel"/>
+                        <TextView android:text="Total" style="@style/StatLabel"/>
                     </LinearLayout>
 
                     <LinearLayout style="@style/StatCard" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="4dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="●" android:textSize="22sp" android:textColor="@color/status_running" android:layout_marginBottom="2dp"/>
                         <TextView android:id="@+id/tvRunningBots" style="@style/StatNumber" android:textColor="@color/status_running" android:text="—"/>
                         <TextView android:text="Running" style="@style/StatLabel"/>
                     </LinearLayout>
 
                     <LinearLayout style="@style/StatCard" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="4dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="■" android:textSize="22sp" android:textColor="@color/status_stopped" android:layout_marginBottom="2dp"/>
                         <TextView android:id="@+id/tvStoppedBots" style="@style/StatNumber" android:text="—"/>
                         <TextView android:text="Stopped" style="@style/StatLabel"/>
                     </LinearLayout>
 
                     <LinearLayout style="@style/StatCard" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="4dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="✕" android:textSize="22sp" android:textColor="@color/status_crashed" android:layout_marginBottom="2dp"/>
                         <TextView android:id="@+id/tvCrashedBots" style="@style/StatNumber" android:textColor="@color/status_crashed" android:text="—"/>
                         <TextView android:text="Crashed" style="@style/StatLabel"/>
                     </LinearLayout>
@@ -78,22 +82,23 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Your Bots"
+                    android:text="YOUR BOTS"
                     android:textColor="@color/text_secondary"
-                    android:textSize="12sp"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.1"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.15"
                     android:layout_marginBottom="10dp"/>
 
                 <TextView
                     android:id="@+id/tvEmpty"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="No bots yet. Tap + to upload your first bot."
+                    android:text="No bots yet.
+Tap ＋ to upload your first bot."
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp"
                     android:gravity="center"
-                    android:padding="32dp"
+                    android:padding="36dp"
                     android:visibility="gone"/>
 
                 <androidx.recyclerview.widget.RecyclerView

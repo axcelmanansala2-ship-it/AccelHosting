@@ -26,6 +26,7 @@ class UploadActivity : AppCompatActivity() {
 
     companion object {
         private const val PICK_FILE = 1001
+        private val VALID_EXTENSIONS = listOf("py", "pyc", "zip")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +37,6 @@ class UploadActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Upload Bot"
 
-        // Slide in from right
         binding.root.alpha = 0f
         binding.root.translationX = 60f
         binding.root.animate()
@@ -51,8 +51,11 @@ class UploadActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 type = "*/*"
                 putExtra(Intent.EXTRA_MIME_TYPES, arrayOf(
-                    "application/zip", "application/x-zip-compressed",
-                    "text/x-python", "text/plain", "application/octet-stream"
+                    "application/zip",
+                    "application/x-zip-compressed",
+                    "text/x-python",
+                    "text/plain",
+                    "application/octet-stream"
                 ))
             }
             startActivityForResult(intent, PICK_FILE)
@@ -78,16 +81,17 @@ class UploadActivity : AppCompatActivity() {
         if (requestCode == PICK_FILE && resultCode == Activity.RESULT_OK) {
             selectedUri = data?.data
             selectedFileName = getFileName(selectedUri) ?: "unknown"
-            val ext = selectedFileName.substringAfterLast('.', "")
-            if (ext !in listOf("py", "zip")) {
-                Toast.makeText(this, "Only .py and .zip files are supported", Toast.LENGTH_SHORT).show()
+            val ext = selectedFileName.substringAfterLast('.', "").lowercase()
+            if (ext !in VALID_EXTENSIONS) {
+                Toast.makeText(this,
+                    "Supported formats: .py  .pyc  .zip",
+                    Toast.LENGTH_LONG).show()
                 selectedUri = null
                 selectedFileName = ""
                 binding.tvSelectedFile.text = "No file selected"
                 return
             }
             binding.tvSelectedFile.text = selectedFileName
-
             if (binding.etBotName.text.isNullOrBlank()) {
                 binding.etBotName.setText(selectedFileName.substringBeforeLast('.'))
             }
@@ -112,7 +116,7 @@ class UploadActivity : AppCompatActivity() {
         val uri = selectedUri
         val botName = binding.etBotName.text.toString().trim()
         when {
-            uri == null -> Toast.makeText(this, "Please select a file", Toast.LENGTH_SHORT).show()
+            uri == null       -> Toast.makeText(this, "Please select a file", Toast.LENGTH_SHORT).show()
             botName.isBlank() -> Toast.makeText(this, "Enter a bot name", Toast.LENGTH_SHORT).show()
             else -> {
                 setLoading(true)
@@ -123,8 +127,12 @@ class UploadActivity : AppCompatActivity() {
                             FileOutputStream(tmpFile).use { output -> input.copyTo(output) }
                         }
 
-                        val mediaType = if (selectedFileName.endsWith(".zip"))
-                            "application/zip" else "text/x-python"
+                        val ext = selectedFileName.substringAfterLast('.', "").lowercase()
+                        val mediaType = when (ext) {
+                            "zip"  -> "application/zip"
+                            "pyc"  -> "application/octet-stream"
+                            else   -> "text/x-python"
+                        }
                         val fileBody = tmpFile.asRequestBody(mediaType.toMediaTypeOrNull())
                         val filePart = MultipartBody.Part.createFormData("file", selectedFileName, fileBody)
                         val namePart = botName.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -133,7 +141,7 @@ class UploadActivity : AppCompatActivity() {
                         tmpFile.delete()
 
                         Toast.makeText(this@UploadActivity,
-                            "$botName uploaded! Dependencies will install when you start it.",
+                            "'$botName' uploaded! Missing packages install automatically on first run.",
                             Toast.LENGTH_LONG).show()
                         finish()
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)

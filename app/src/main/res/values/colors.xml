@@ -12,6 +12,8 @@
     <color name="status_crashed">#F44336</color>
     <color name="status_installing">#FF9800</color>
     <color name="log_text">#B0BEC5</color>
+    <color name="terminal_green">#A5F3A5</color>
+    <color name="log_bg">#060810</color>
     <color name="white">#FFFFFF</color>
     <color name="card_border">#2A2F45</color>
 </resources>
