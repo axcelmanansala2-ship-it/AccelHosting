@@ -20,6 +20,15 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "About"
 
+        // Slide in from right
+        binding.root.alpha = 0f
+        binding.root.translationX = 60f
+        binding.root.animate()
+            .alpha(1f).translationX(0f)
+            .setDuration(350)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .start()
+
         binding.tvServerUrl.text = TokenManager.SERVER_URL
         binding.tvAppVersion.text = "v1.0"
 
@@ -44,5 +53,15 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean { finish(); return true }
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        return true
+    }
+
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
 }

@@ -36,6 +36,15 @@ class UploadActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Upload Bot"
 
+        // Slide in from right
+        binding.root.alpha = 0f
+        binding.root.translationX = 60f
+        binding.root.animate()
+            .alpha(1f).translationX(0f)
+            .setDuration(380)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .start()
+
         ApiClient.init(this)
 
         binding.btnPickFile.setOnClickListener {
@@ -54,7 +63,14 @@ class UploadActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         return true
+    }
+
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -117,8 +133,10 @@ class UploadActivity : AppCompatActivity() {
                         tmpFile.delete()
 
                         Toast.makeText(this@UploadActivity,
-                            "$botName uploaded! Installing dependencies…", Toast.LENGTH_LONG).show()
+                            "$botName uploaded! Dependencies will install when you start it.",
+                            Toast.LENGTH_LONG).show()
                         finish()
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                     } catch (e: Exception) {
                         Toast.makeText(this@UploadActivity,
                             "Upload failed: ${e.message}", Toast.LENGTH_LONG).show()

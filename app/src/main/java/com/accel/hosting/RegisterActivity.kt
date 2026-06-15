@@ -23,13 +23,32 @@ class RegisterActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Create Account"
 
+        // Slide in from right
+        binding.root.alpha = 0f
+        binding.root.translationX = 60f
+        binding.root.animate()
+            .alpha(1f).translationX(0f)
+            .setDuration(380)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .start()
+
         binding.btnRegister.setOnClickListener { doRegister() }
-        binding.tvLogin.setOnClickListener { finish() }
+        binding.tvLogin.setOnClickListener {
+            finish()
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         return true
+    }
+
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun doRegister() {
@@ -52,6 +71,7 @@ class RegisterActivity : AppCompatActivity() {
                         val intent = Intent(this@RegisterActivity, DashboardActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
+                        overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
                     } catch (e: Exception) {
                         val msg = e.message ?: "Registration failed"
                         Toast.makeText(this@RegisterActivity,
