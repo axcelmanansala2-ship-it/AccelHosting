@@ -20,6 +20,7 @@ class BotDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBotDetailBinding
     private var botId: String = ""
     private var pollJob: Job? = null
+    private var logPollJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,15 @@ class BotDetailActivity : AppCompatActivity() {
         botId = intent.getStringExtra("bot_id") ?: ""
         val botName = intent.getStringExtra("bot_name") ?: "Bot"
         supportActionBar?.title = botName
+
+        // Slide content in
+        binding.root.alpha = 0f
+        binding.root.translationX = 60f
+        binding.root.animate()
+            .alpha(1f).translationX(0f)
+            .setDuration(350)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .start()
 
         ApiClient.init(this)
 
@@ -64,19 +74,31 @@ class BotDetailActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         startPolling()
+        startLogPolling()
     }
 
     override fun onPause() {
         super.onPause()
         pollJob?.cancel()
+        logPollJob?.cancel()
     }
 
     private fun startPolling() {
         pollJob?.cancel()
         pollJob = lifecycleScope.launch {
             while (isActive) {
-                loadBot(silent = true)
                 delay(5000)
+                loadBot(silent = true)
+            }
+        }
+    }
+
+    private fun startLogPolling() {
+        logPollJob?.cancel()
+        logPollJob = lifecycleScope.launch {
+            while (isActive) {
+                delay(3000)
+                loadLogs(silent = true)
             }
         }
     }
@@ -134,15 +156,22 @@ class BotDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadLogs() {
+    private fun loadLogs(silent: Boolean = false) {
         lifecycleScope.launch {
             try {
                 val resp = ApiClient.service.getBotLogs(botId)
+                if (resp.logs.isEmpty()) {
+                    if (!silent) binding.tvLogs.text = "(no logs yet)"
+                    return@launch
+                }
                 val logText = resp.logs.joinToString("\n")
-                binding.tvLogs.text = if (logText.isBlank()) "(no logs)" else logText
-                binding.scrollLogs.post { binding.scrollLogs.fullScroll(View.FOCUS_DOWN) }
+                // Only update if changed (avoids scroll jump on auto-poll)
+                if (binding.tvLogs.text.toString() != logText) {
+                    binding.tvLogs.text = logText
+                    binding.scrollLogs.post { binding.scrollLogs.fullScroll(View.FOCUS_DOWN) }
+                }
             } catch (e: Exception) {
-                binding.tvLogs.text = "Failed to load logs: ${e.message}"
+                if (!silent) binding.tvLogs.text = "Failed to load logs: ${e.message}"
             }
         }
     }
@@ -158,7 +187,7 @@ class BotDetailActivity : AppCompatActivity() {
                 Toast.makeText(this@BotDetailActivity,
                     "${action.replaceFirstChar { it.uppercase() }}ed successfully", Toast.LENGTH_SHORT).show()
                 loadBot()
-                if (action != "stop") loadLogs()
+                loadLogs()
             } catch (e: Exception) {
                 Toast.makeText(this@BotDetailActivity, "Failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -172,7 +201,11 @@ class BotDetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            android.R.id.home -> { finish(); true }
+            android.R.id.home -> {
+                finish()
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+                true
+            }
             R.id.action_delete -> {
                 AlertDialog.Builder(this)
                     .setTitle("Delete Bot")
@@ -183,6 +216,7 @@ class BotDetailActivity : AppCompatActivity() {
                                 ApiClient.service.deleteBot(botId)
                                 Toast.makeText(this@BotDetailActivity, "Bot deleted", Toast.LENGTH_SHORT).show()
                                 finish()
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
                             } catch (e: Exception) {
                                 Toast.makeText(this@BotDetailActivity, "Failed: ${e.message}", Toast.LENGTH_SHORT).show()
                             }
@@ -194,5 +228,11 @@ class BotDetailActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 }

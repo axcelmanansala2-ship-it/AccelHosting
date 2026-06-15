@@ -24,9 +24,19 @@ class LoginActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = ""
 
+        // Animate form sliding up on open
+        binding.root.alpha = 0f
+        binding.root.translationY = 60f
+        binding.root.animate()
+            .alpha(1f).translationY(0f)
+            .setDuration(450)
+            .setStartDelay(80)
+            .start()
+
         binding.btnLogin.setOnClickListener { doLogin() }
         binding.tvRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
 
@@ -38,6 +48,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_settings) {
             startActivity(Intent(this, SettingsActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -58,6 +69,7 @@ class LoginActivity : AppCompatActivity() {
                 TokenManager.saveToken(this@LoginActivity, resp.token)
                 ApiClient.reset()
                 startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
                 finish()
             } catch (e: Exception) {
                 val msg = e.message ?: "Login failed"

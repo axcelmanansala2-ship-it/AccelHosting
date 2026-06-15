@@ -23,6 +23,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDashboardBinding
     private lateinit var adapter: BotAdapter
     private var pollJob: Job? = null
+    private var firstLoad = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,11 @@ class DashboardActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.title = "AccelHosting"
+
+        // FAB starts hidden — animates in after first load
+        binding.fabUpload.scaleX = 0f
+        binding.fabUpload.scaleY = 0f
+        binding.fabUpload.alpha = 0f
 
         adapter = BotAdapter(
             onStart = { bot -> controlBot(bot, "start") },
@@ -39,6 +45,7 @@ class DashboardActivity : AppCompatActivity() {
                 intent.putExtra("bot_id", bot.id)
                 intent.putExtra("bot_name", bot.name)
                 startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
         )
         binding.recyclerBots.adapter = adapter
@@ -46,6 +53,7 @@ class DashboardActivity : AppCompatActivity() {
         binding.swipeRefresh.setOnRefreshListener { loadData() }
         binding.fabUpload.setOnClickListener {
             startActivity(Intent(this, UploadActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         ApiClient.init(this)
@@ -88,6 +96,17 @@ class DashboardActivity : AppCompatActivity() {
                 adapter.submitList(bots)
                 binding.tvEmpty.visibility = if (bots.isEmpty()) View.VISIBLE else View.GONE
                 binding.recyclerBots.visibility = if (bots.isEmpty()) View.GONE else View.VISIBLE
+
+                // Animate FAB in on first successful load
+                if (firstLoad) {
+                    firstLoad = false
+                    binding.fabUpload.animate()
+                        .scaleX(1f).scaleY(1f).alpha(1f)
+                        .setDuration(350)
+                        .setStartDelay(200)
+                        .setInterpolator(android.view.animation.OvershootInterpolator(1.2f))
+                        .start()
+                }
             } catch (e: Exception) {
                 if (!silent) Toast.makeText(this@DashboardActivity, "Failed to load: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
@@ -119,6 +138,7 @@ class DashboardActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 true
             }
             R.id.action_logout -> {
@@ -134,6 +154,12 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
     private fun doLogout() {
         lifecycleScope.launch {
             try { ApiClient.service.logout() } catch (_: Exception) {}
@@ -142,6 +168,7 @@ class DashboardActivity : AppCompatActivity() {
             val intent = Intent(this@DashboardActivity, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
     }
 }
