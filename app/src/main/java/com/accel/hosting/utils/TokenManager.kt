@@ -6,7 +6,7 @@ object TokenManager {
     private const val PREFS = "accel_prefs"
     private const val KEY_TOKEN = "token"
     private const val KEY_SERVER_URL = "server_url"
-    const val DEFAULT_SERVER_URL = "https://your-server.replit.app"
+    const val DEFAULT_SERVER_URL = "https://0d21978a-2440-4da0-b381-112cebc6bfe9-00-xb2jija7bay1.spock.replit.dev"
 
     fun saveToken(context: Context, token: String) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
